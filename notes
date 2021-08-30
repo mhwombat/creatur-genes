@@ -1,0 +1,15 @@
+UnitInterval, PlusMinusOne -> ConstrainedDouble
+UIDouble, PM1Double -> ConstrainedDouble
+uiToDouble, pm1ToDouble -> toDouble
+doubletoUI, doubleToPM1 -> fromDouble
+forceDoubletoUI, forceDoubleToPM1 -> force
+uiApply, pm1Apply -> apply
+adjustUIDouble, adjustPM1Double -> adjust
+uiDiff, pm1Diff -> diff
+uiVectorDiff, pm1VectorDiff -> vectorDiff
+adjustUIVector, adjustPM1Vector -> adjustVector
+adjustUIVectorPreserveLength, adjustPM1VectorPreserveLength -> adjustVectorPreserveLength
+uiDoublesTo8BitHex, pm1DoublesTo8BitHex -> to8BitHexes
+uiDoubleTo8BitHex, pm1DoubleTo8BitHex -> to8BitHex
+
+ConstrainedDouble must fit in an 8 bit Hex value
