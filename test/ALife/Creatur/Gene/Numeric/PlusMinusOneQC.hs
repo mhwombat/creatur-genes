@@ -16,25 +16,16 @@ module ALife.Creatur.Gene.Numeric.PlusMinusOneQC
     test
   ) where
 
-import ALife.Creatur.Gene.Numeric.PlusMinusOne
-import ALife.Creatur.Gene.Test
-    ( prop_diploid_expressable
-    , prop_diploid_identity
-    , prop_diploid_readable
-    , prop_genetic_round_trippable
-    , prop_makeSimilar_works
-    , prop_serialize_round_trippable
-    , prop_show_read_round_trippable
-    )
-import ALife.Creatur.Gene.Numeric.UnitIntervalQC
-    ()
-import Control.DeepSeq
-    (deepseq)
-import Test.Framework
-    (Test, testGroup)
-import Test.Framework.Providers.QuickCheck2
-    (testProperty)
-import Test.QuickCheck
+import           ALife.Creatur.Gene.Numeric.PlusMinusOne
+import           ALife.Creatur.Gene.Numeric.UnitIntervalQC ()
+import           ALife.Creatur.Gene.Test
+    (prop_diploid_expressable, prop_diploid_identity, prop_diploid_readable,
+    prop_genetic_round_trippable, prop_makeSimilar_works,
+    prop_serialize_round_trippable, prop_show_read_round_trippable)
+import           Control.DeepSeq                           (deepseq)
+import           Test.Framework                            (Test, testGroup)
+import           Test.Framework.Providers.QuickCheck2      (testProperty)
+import           Test.QuickCheck
 
 prop_max_pm1Diff_is_1 :: Bool
 prop_max_pm1Diff_is_1 = pm1Diff (doubleToPM1 (-1)) (doubleToPM1 1) == 1
@@ -53,12 +44,12 @@ prop_pm1Diff_is_symmetric x y = property $ pm1Diff x y == pm1Diff y x
 prop_max_pm1VectorDiff_is_1 :: Int -> Property
 prop_max_pm1VectorDiff_is_1 n = n > 0 ==>
   pm1VectorDiff ones minusOnes == 1
-  where ones = map doubleToPM1 . replicate n $ 1
-        minusOnes = map doubleToPM1 . replicate n $ -1
+  where ones = replicate n . doubleToPM1 $ 1
+        minusOnes = replicate n . doubleToPM1 $ -1
 
 prop_max_pm1VectorDiff_is_0 :: Int -> Property
 prop_max_pm1VectorDiff_is_0 n = property $ pm1VectorDiff ones ones == 0
-  where ones = map doubleToPM1 . replicate n $ 1
+  where ones = replicate n . doubleToPM1 $ 1
 
 prop_pm1VectorDiff_in_range :: [PM1Double] -> [PM1Double] -> Property
 prop_pm1VectorDiff_in_range x y = property $ 0 <= diff && diff <= 1

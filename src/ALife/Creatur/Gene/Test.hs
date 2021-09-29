@@ -34,27 +34,21 @@ module ALife.Creatur.Gene.Test
     divvy
   ) where
 
-import qualified ALife.Creatur.Genetics.BRGCWord8 as W8
-import           ALife.Creatur.Genetics.Diploid
-    (Diploid, express)
-import           ALife.Creatur.Util
-    (fromEither)
 import           ALife.Creatur.Gene.Numeric.UnitInterval
     (UIDouble, doubleToUI, uiToDouble)
 import           ALife.Creatur.Gene.Numeric.Util
     (adjustNum, forceToWord8, scaleFromWord8, scaleWord8ToInt)
-import           Control.DeepSeq
-    (NFData, deepseq)
+import qualified ALife.Creatur.Genetics.BRGCWord8        as W8
+import           ALife.Creatur.Genetics.Diploid          (Diploid, express)
+import           ALife.Creatur.Util                      (fromEither)
+import           Control.DeepSeq                         (NFData, deepseq)
 import           Control.Monad.Random
     (Rand, RandomGen, getRandom)
-import           Control.Monad.State.Lazy
-    (runState)
+import           Control.Monad.State.Lazy                (runState)
 import           Data.Serialize
     (Serialize, decode, encode)
-import           Data.Word
-    (Word8)
-import           GHC.Generics
-    (Generic)
+import           Data.Word                               (Word8)
+import           GHC.Generics                            (Generic)
 import           Test.QuickCheck
 
 -- | Returns a generator for 8-bit floating point values in the
@@ -87,7 +81,7 @@ prop_genetic_round_trippable eq g = property $
   where x = W8.write g
         (result, (_, i, _)) = runState W8.get (x, 0, [])
         leftover = drop i x
-        g' = fromEither (error "read returned Nothing") $ result
+        g' = fromEither (error "read returned Nothing") result
 
 -- | Verify that genes are not affected by decoding and encoding.
 prop_genetic_round_trippable2
@@ -133,7 +127,7 @@ prop_makeSimilar_works diff makeSimilar x r y
         diffAfter = diff x y'
 
 -- | A simple pattern that is useful for testing.
-data TestPattern = TestPattern Word8
+newtype TestPattern = TestPattern Word8
   deriving (Show, Read, Eq, Generic, Serialize, W8.Genetic, Diploid,
             NFData, Ord)
 
@@ -161,7 +155,7 @@ makeTestPatternSimilar (TestPattern target) r (TestPattern x)
 
 -- | Random pattern generator.
 randomTestPattern :: RandomGen r => Rand r TestPattern
-randomTestPattern = fmap (TestPattern) getRandom
+randomTestPattern = TestPattern <$> getRandom
 
 -- | @'divvy' n k@ uses size @n@ to generate a vector of @k@ integers,
 --   guaranteeing that the sum of the vector is less than @k@ or @n@,

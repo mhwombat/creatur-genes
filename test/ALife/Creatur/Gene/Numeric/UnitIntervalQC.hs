@@ -16,23 +16,15 @@ module ALife.Creatur.Gene.Numeric.UnitIntervalQC
     test
   ) where
 
-import ALife.Creatur.Gene.Test
-    ( prop_diploid_expressable
-    , prop_diploid_identity
-    , prop_diploid_readable
-    , prop_genetic_round_trippable
-    , prop_makeSimilar_works
-    , prop_serialize_round_trippable
-    , prop_show_read_round_trippable
-    )
-import ALife.Creatur.Gene.Numeric.UnitInterval
-import Control.DeepSeq
-    (deepseq)
-import Test.Framework
-    (Test, testGroup)
-import Test.Framework.Providers.QuickCheck2
-    (testProperty)
-import Test.QuickCheck
+import           ALife.Creatur.Gene.Numeric.UnitInterval
+import           ALife.Creatur.Gene.Test
+    (prop_diploid_expressable, prop_diploid_identity, prop_diploid_readable,
+    prop_genetic_round_trippable, prop_makeSimilar_works,
+    prop_serialize_round_trippable, prop_show_read_round_trippable)
+import           Control.DeepSeq                         (deepseq)
+import           Test.Framework                          (Test, testGroup)
+import           Test.Framework.Providers.QuickCheck2    (testProperty)
+import           Test.QuickCheck
 
 prop_max_uiDiff_is_1 :: Bool
 prop_max_uiDiff_is_1 = uiDiff (doubleToUI 0) (doubleToUI 1) == 1
@@ -48,12 +40,12 @@ prop_uiDiff_is_symmetric x y = property $ uiDiff x y == uiDiff y x
 
 prop_max_uiVectorDiff_is_1 :: Int -> Property
 prop_max_uiVectorDiff_is_1 n = n > 0 ==> uiVectorDiff ones zeroes == 1
-  where ones = map doubleToUI . replicate n $ 1
-        zeroes = map doubleToUI . replicate n $ 0
+  where ones = replicate n . doubleToUI $ 1
+        zeroes = replicate n . doubleToUI $ 0
 
 prop_min_uiVectorDiff_is_0 :: Int -> Property
 prop_min_uiVectorDiff_is_0 n = property $ uiVectorDiff ones ones == 0
-  where ones = map doubleToUI . replicate n $ 1
+  where ones = replicate n . doubleToUI $ 1
 
 prop_uiVectorDiff_in_range :: [UIDouble] -> [UIDouble] -> Property
 prop_uiVectorDiff_in_range x y = property $ 0 <= diff && diff <= 1

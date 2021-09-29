@@ -17,12 +17,9 @@ module ALife.Creatur.Gene.Numeric.UtilQC
   ) where
 
 import           ALife.Creatur.Gene.Numeric.Util
-import           Data.Word
-    (Word8)
-import           Test.Framework
-    (Test, testGroup)
-import           Test.Framework.Providers.QuickCheck2
-    (testProperty)
+import           Data.Word                            (Word8)
+import           Test.Framework                       (Test, testGroup)
+import           Test.Framework.Providers.QuickCheck2 (testProperty)
 import           Test.QuickCheck
 
 prop_scaleToWord8_min :: (Double, Double) -> Property
@@ -36,7 +33,7 @@ prop_scaleFromWord8_min (a, b) = property $ scaleFromWord8 (a, b) 0 == a
 
 prop_scaleFromWord8_max :: (Double, Double) -> Property
 prop_scaleFromWord8_max (a, b) = b > a ==>
-  abs ((scaleFromWord8 (a, b) 255) - b) < 1e-10
+  abs (scaleFromWord8 (a, b) 255 - b) < 1e-10
 
 prop_scaleFromWord8_round_trippable :: (Double, Double) -> Word8 -> Property
 prop_scaleFromWord8_round_trippable (a, b) x = b > a ==> x' == x

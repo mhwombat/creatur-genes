@@ -17,13 +17,14 @@ module ALife.Creatur.Gene.Numeric.WeightsQC
     sizedArbWeights
   ) where
 
-import           ALife.Creatur.Gene.Test
-import           ALife.Creatur.Gene.Numeric.UnitIntervalQC    ()
-import           ALife.Creatur.Gene.Numeric.UnitInterval      (UIDouble, uiToDouble)
+import           ALife.Creatur.Gene.Numeric.UnitInterval
+    (UIDouble, uiToDouble)
+import           ALife.Creatur.Gene.Numeric.UnitIntervalQC  ()
 import           ALife.Creatur.Gene.Numeric.WeightsInternal
-import qualified Numeric.ApproxEq                     as N
-import           Test.Framework                       (Test, testGroup)
-import           Test.Framework.Providers.QuickCheck2 (testProperty)
+import           ALife.Creatur.Gene.Test
+import qualified Numeric.ApproxEq                           as N
+import           Test.Framework                             (Test, testGroup)
+import           Test.Framework.Providers.QuickCheck2       (testProperty)
 import           Test.QuickCheck
 
 prop_sum_of_weights_is_1 :: Weights -> Property
@@ -33,7 +34,7 @@ prop_sum_of_weights_is_1 w
 
 prop_weights_are_positive :: Weights -> Property
 prop_weights_are_positive w = property $
-  (and . map ((>= 0) . uiToDouble) . toUIDoubles $ w)
+  (all ((>= 0) . uiToDouble) . toUIDoubles) w
 
 prop_weighted_sum_in_range :: Weights -> [UIDouble] -> Property
 prop_weighted_sum_in_range ws xs
@@ -44,7 +45,7 @@ prop_weighted_sum_in_range ws xs
 equiv :: Weights -> Weights -> Bool
 equiv (Weights xs) (Weights ys)
   = length xs == length ys
-      && (and $ zipWith (N.within 10000) (map uiToDouble xs) (map uiToDouble ys))
+      && and (zipWith (N.within 10000) (map uiToDouble xs) (map uiToDouble ys))
 
 test :: Test
 test = testGroup "ALife.Creatur.Gene.Numeric.WeightsQC"

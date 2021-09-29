@@ -16,23 +16,18 @@
 {-# LANGUAGE DeriveGeneric  #-}
 module ALife.Creatur.Gene.Numeric.WeightsInternal where
 
-import ALife.Creatur.Genetics.BRGCWord8
-    (Genetic, get)
-import ALife.Creatur.Genetics.Diploid
-    (Diploid, express)
-import ALife.Creatur.Gene.Numeric.UnitInterval
+import           ALife.Creatur.Gene.Numeric.UnitInterval
     (UIDouble, normalise, uiDiff)
-import Control.DeepSeq
-    (NFData)
-import Data.Serialize
-    (Serialize)
-import GHC.Generics
-    (Generic)
-import Test.QuickCheck
-    (Arbitrary, arbitrary, Gen, sized, vectorOf)
+import           ALife.Creatur.Genetics.BRGCWord8        (Genetic, get)
+import           ALife.Creatur.Genetics.Diploid          (Diploid, express)
+import           Control.DeepSeq                         (NFData)
+import           Data.Serialize                          (Serialize)
+import           GHC.Generics                            (Generic)
+import           Test.QuickCheck
+    (Arbitrary, Gen, arbitrary, sized, vectorOf)
 
 -- | A sequence of weights for calculating weighted sums.
-data Weights = Weights [UIDouble]
+newtype Weights = Weights [UIDouble]
   deriving (Eq, Show, Read, Generic, Ord, Serialize, NFData)
   -- NOTE: Regarding Diploid instance, sum of weights will never be >1,
   -- because "express" chooses the smaller value.
@@ -97,7 +92,7 @@ weightedUIVectorDiff ws xs ys
 
 -- | Generator for weights.
 sizedArbWeights :: Int -> Gen Weights
-sizedArbWeights n = fmap makeWeights $ vectorOf n arbitrary
+sizedArbWeights n = makeWeights <$> vectorOf n arbitrary
 
 -- sizedArbWeights :: Int -> Gen Weights
 -- sizedArbWeights n = do
