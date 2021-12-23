@@ -10,14 +10,15 @@
 -- Runs the QuickCheck tests.
 --
 ------------------------------------------------------------------------
+import           ALife.Creatur.Gene.Numeric.NonNegativeQC  (test)
 import           ALife.Creatur.Gene.Numeric.PlusMinusOneQC (test)
 import           ALife.Creatur.Gene.Numeric.UnitIntervalQC (test)
 import           ALife.Creatur.Gene.Numeric.UtilQC         (test)
 import           ALife.Creatur.Gene.Numeric.WeightsQC      (test)
 import           ALife.Creatur.Gene.TestQC                 (test)
 
-import           Test.Framework                             as TF
-    (Test, defaultMain)
+import           Test.Framework                            as TF (Test,
+                                                                  defaultMain)
 
 tests :: [TF.Test]
 tests =
@@ -26,6 +27,7 @@ tests =
     ALife.Creatur.Gene.TestQC.test,
     ALife.Creatur.Gene.Numeric.UtilQC.test,
     ALife.Creatur.Gene.Numeric.UnitIntervalQC.test,
+    ALife.Creatur.Gene.Numeric.NonNegativeQC.test,
     ALife.Creatur.Gene.Numeric.PlusMinusOneQC.test,
     ALife.Creatur.Gene.Numeric.WeightsQC.test
   ]

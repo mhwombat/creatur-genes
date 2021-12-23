@@ -22,14 +22,14 @@ import           Test.Framework                       (Test, testGroup)
 import           Test.Framework.Providers.QuickCheck2 (testProperty)
 import           Test.QuickCheck
 
-prop_scaleToWord8_min :: (Double, Double) -> Property
-prop_scaleToWord8_min (a, b) = property $ scaleToWord8 (a, b) a == 0
+prop_scaleToWord8_min :: (Double, Double) -> Bool
+prop_scaleToWord8_min (a, b) = scaleToWord8 (a, b) a == 0
 
 prop_scaleToWord8_max :: (Double, Double) -> Property
 prop_scaleToWord8_max (a, b) = b > a ==> scaleToWord8 (a, b) b == 255
 
-prop_scaleFromWord8_min :: (Double, Double) -> Property
-prop_scaleFromWord8_min (a, b) = property $ scaleFromWord8 (a, b) 0 == a
+prop_scaleFromWord8_min :: (Double, Double) -> Bool
+prop_scaleFromWord8_min (a, b) = scaleFromWord8 (a, b) 0 == a
 
 prop_scaleFromWord8_max :: (Double, Double) -> Property
 prop_scaleFromWord8_max (a, b) = b > a ==>

@@ -1,6 +1,6 @@
 cabal-version:      2.4
 name:               creatur-genes
-version:            1.0.1
+version:            1.0.2
 synopsis:           Genes and genetic utilities for use with creatur.
 description:
   Please see the README on GitHub at <https://github.com/mhwombat/creatur-genes#readme>
@@ -24,14 +24,16 @@ source-repository head
 common common-stuff
   default-language: Haskell2010
   build-depends:
-    , base        >=4.7 && <5
-    , QuickCheck
+    , base       >=4.7 && <5
+    , QuickCheck >= 2.14.2 && < 2.15
 
 library
   import:          common-stuff
   hs-source-dirs:  src
   exposed-modules:
+    ALife.Creatur.Gene.Numeric.Narrow
     ALife.Creatur.Gene.Numeric.PlusMinusOne
+    ALife.Creatur.Gene.Numeric.NonNegative
     ALife.Creatur.Gene.Numeric.UnitInterval
     ALife.Creatur.Gene.Numeric.Util
     ALife.Creatur.Gene.Numeric.Weights
@@ -42,12 +44,13 @@ library
   autogen-modules: Paths_creatur_genes
   ghc-options:     -Wall -Wunused-packages
   build-depends:
-    , cereal       ^>=0.5.8
-    , creatur      ^>=5.9.31
-    , deepseq      ^>=1.4.3
-    , MonadRandom  ^>=0.5.3
-    , mtl          ^>=2.2.2
-    , random       >=1.1    && <1.3
+    , cereal      >= 0.5.8 && < 0.6
+    , creatur     >= 5.9.32 && < 5.10
+    , deepseq     >= 1.4.4 && < 1.5
+    , MonadRandom >= 0.5.3 && < 0.6
+    , mtl         >= 2.2.2 && < 2.3
+    , random      >= 1.2.0 && < 1.3
+    , som         >= 11.0 && < 11.1
 
 test-suite creatur-genes-test
   import:         common-stuff
@@ -59,6 +62,7 @@ test-suite creatur-genes-test
 
   other-modules:
     ALife.Creatur.Gene.Numeric.PlusMinusOneQC
+    ALife.Creatur.Gene.Numeric.NonNegativeQC
     ALife.Creatur.Gene.Numeric.UnitIntervalQC
     ALife.Creatur.Gene.Numeric.UtilQC
     ALife.Creatur.Gene.Numeric.WeightsQC
@@ -66,7 +70,6 @@ test-suite creatur-genes-test
 
   build-depends:
     , creatur-genes
-    , deepseq
     , numeric-tools
     , test-framework
     , test-framework-quickcheck2

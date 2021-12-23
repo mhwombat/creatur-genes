@@ -14,17 +14,19 @@
 ------------------------------------------------------------------------
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric  #-}
+{-# LANGUAGE TypeFamilies   #-}
 module ALife.Creatur.Gene.Numeric.WeightsInternal where
 
-import           ALife.Creatur.Gene.Numeric.UnitInterval
-    (UIDouble, normalise, uiDiff)
+import           ALife.Creatur.Gene.Numeric.UnitInterval (UIDouble, narrow,
+                                                          wide)
 import           ALife.Creatur.Genetics.BRGCWord8        (Genetic, get)
 import           ALife.Creatur.Genetics.Diploid          (Diploid, express)
 import           Control.DeepSeq                         (NFData)
 import           Data.Serialize                          (Serialize)
 import           GHC.Generics                            (Generic)
-import           Test.QuickCheck
-    (Arbitrary, Gen, arbitrary, sized, vectorOf)
+import           Test.QuickCheck                         (Arbitrary, Gen,
+                                                          arbitrary, sized,
+                                                          vectorOf)
 
 -- | A sequence of weights for calculating weighted sums.
 newtype Weights = Weights [UIDouble]
@@ -52,7 +54,9 @@ numWeights (Weights xs) = length xs
 
 -- | Calculates the weighted sum of a sequence of values.
 weightedSum :: Weights -> [UIDouble] -> UIDouble
-weightedSum ws xs = sum $ zipWith (*) (toUIDoubles ws) xs
+weightedSum ws xs = narrow . sum $ zipWith (*) ws' xs'
+  where ws' = map wide $ toUIDoubles ws
+        xs' = map wide xs
 
 -- | Extract the weights from a @Weights@ object.
 toUIDoubles :: Weights -> [UIDouble]
@@ -78,17 +82,28 @@ toUIDoubles (Weights xs) = xs
 weightAt :: Weights -> Int -> UIDouble
 weightAt w n = if length ws > n
                then ws !! n
-               else 0
+               else narrow 0
   where ws = toUIDoubles w
 
--- | Calculates the weighted difference between two sequences of
---   numbers.
---   Returns a number between 0 and 1.
---   A result of 0 indicates that the inputs are identical.
-weightedUIVectorDiff
-  :: Weights -> [UIDouble] -> [UIDouble] -> UIDouble
-weightedUIVectorDiff ws xs ys
-  = sum . zipWith (*) (toUIDoubles ws) $ zipWith uiDiff xs ys
+-- | Internal method
+normalise :: [UIDouble] -> [UIDouble]
+normalise ws
+  | k == 0     = replicate n (narrow (1 / fromIntegral n))
+  | otherwise = tweak $ map scale ws
+  where k = sum . map wide $ ws
+        n = length ws
+        scale w = narrow $ wide w / k
+
+-- | Internal method
+tweak :: [UIDouble] -> [UIDouble]
+tweak (x:xs)
+  | excess > 0 && x' > excess = narrow (x' - excess) : xs
+  | excess > 0               = narrow 0 : tweak xs
+  | otherwise                = x : xs
+  where excess = max 0 $ s - 1
+        x' = wide x
+        s = sum . map wide $ (x:xs)
+tweak [] = error "tweak should not have been called"
 
 -- | Generator for weights.
 sizedArbWeights :: Int -> Gen Weights

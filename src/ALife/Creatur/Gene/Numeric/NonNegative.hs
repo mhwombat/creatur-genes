@@ -1,13 +1,13 @@
 ------------------------------------------------------------------------
 -- |
--- Module      :  ALife.Creatur.Gene.Numeric.PlusMinusOne
+-- Module      :  ALife.Creatur.Gene.Numeric.NonNegative
 -- Copyright   :  (c) 2013-2021 Amy de Buitléir
 -- License     :  BSD-style
 -- Maintainer  :  amy@nualeargais.ie
 -- Stability   :  experimental
 -- Portability :  portable
 --
--- Numbers on the interval -1 to 1, inclusive.
+-- Numbers on the unit interval (0 to 1, inclusive).
 --
 ------------------------------------------------------------------------
 {-# LANGUAGE DeriveAnyClass             #-}
@@ -19,9 +19,9 @@
 {-# LANGUAGE ScopedTypeVariables        #-}
 {-# LANGUAGE TypeFamilies               #-}
 
-module ALife.Creatur.Gene.Numeric.PlusMinusOne
+module ALife.Creatur.Gene.Numeric.NonNegative
   (
-    PM1Double,
+    NNDouble,
     narrow,
     wide,
     diff,
@@ -37,24 +37,26 @@ import           ALife.Creatur.Gene.Numeric.UnitInterval (diff, makeSimilar)
 import qualified ALife.Creatur.Genetics.BRGCWord8        as W8
 import           ALife.Creatur.Genetics.Diploid          (Diploid)
 import           Control.DeepSeq                         (NFData)
+import qualified Data.Datamining.Pattern.Numeric         as N
 import           Data.Serialize                          (Serialize)
 import           GHC.Generics                            (Generic)
 import           System.Random                           (Random)
 import           Test.QuickCheck                         (Arbitrary)
 
--- | A number on the interval -1 to 1, inclusive.
-newtype PM1Double = PM1Double Double
+-- | A non-negative number
+newtype NNDouble = NNDouble Double
   deriving (Eq, Ord, Generic)
   deriving anyclass (W8.Genetic)
   deriving newtype (NFData, Serialize)
   deriving (Show, Read, Random, Arbitrary, Diploid)
-    via (UseNarrow PM1Double)
+    via (UseNarrow NNDouble)
 
-instance Bounded PM1Double where
-  minBound = PM1Double (-1)
-  maxBound = PM1Double 1
+instance Bounded NNDouble where
+  minBound = NNDouble 0
+  maxBound = NNDouble (N.maxDouble / 2)
+    -- division by two ensures that diploid expression stays in bounds
 
-instance Narrow PM1Double where
-  type BaseType PM1Double = Double
-  unsafeConstructor = PM1Double
-  wide (PM1Double x) = x
+instance Narrow NNDouble where
+  type BaseType NNDouble = Double
+  unsafeConstructor = NNDouble
+  wide (NNDouble x) = x

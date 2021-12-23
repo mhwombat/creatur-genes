@@ -16,27 +16,25 @@ module ALife.Creatur.Gene.TestQC
   ) where
 
 import           ALife.Creatur.Gene.Test
-import           Test.Framework                        (Test, testGroup)
-import           Test.Framework.Providers.QuickCheck2  (testProperty)
-import           Test.QuickCheck                       hiding
-    (classify, maxSize)
+import           Test.Framework                       (Test, testGroup)
+import           Test.Framework.Providers.QuickCheck2 (testProperty)
 
 test :: Test
 test = testGroup "ALife.Creatur.Gene.TestQC"
   [
     testProperty "prop_serialize_round_trippable - TestPattern"
-      (prop_serialize_round_trippable :: TestPattern -> Property),
+      (prop_serialize_round_trippable :: TestPattern -> Bool),
     testProperty "prop_genetic_round_trippable - TestPattern"
-      (prop_genetic_round_trippable (==) :: TestPattern -> Property),
+      (prop_genetic_round_trippable (==) :: TestPattern -> Bool),
     -- testProperty "prop_genetic_round_trippable2 - TestPattern"
     --   (prop_genetic_round_trippable2
     --    :: Int -> [Word8] -> TestPattern -> Property),
     testProperty "prop_diploid_identity - TestPattern"
-      (prop_diploid_identity (==) :: TestPattern -> Property),
+      (prop_diploid_identity (==) :: TestPattern -> Bool),
     testProperty "prop_show_read_round_trippable - TestPattern"
-      (prop_show_read_round_trippable (==) :: TestPattern -> Property),
+      (prop_show_read_round_trippable (==) :: TestPattern -> Bool),
     testProperty "prop_diploid_expressable - TestPattern"
-      (prop_diploid_expressable :: TestPattern -> TestPattern -> Property),
+      (prop_diploid_expressable :: TestPattern -> TestPattern -> Bool),
     testProperty "prop_diploid_readable - TestPattern"
-      (prop_diploid_readable :: TestPattern -> TestPattern -> Property)
+      (prop_diploid_readable :: TestPattern -> TestPattern -> Bool)
   ]

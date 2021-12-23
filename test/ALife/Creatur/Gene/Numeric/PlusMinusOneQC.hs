@@ -17,102 +17,61 @@ module ALife.Creatur.Gene.Numeric.PlusMinusOneQC
   ) where
 
 import           ALife.Creatur.Gene.Numeric.PlusMinusOne
-import           ALife.Creatur.Gene.Numeric.UnitIntervalQC ()
-import           ALife.Creatur.Gene.Test
-    (prop_diploid_expressable, prop_diploid_identity, prop_diploid_readable,
-    prop_genetic_round_trippable, prop_makeSimilar_works,
-    prop_serialize_round_trippable, prop_show_read_round_trippable)
-import           Control.DeepSeq                           (deepseq)
-import           Test.Framework                            (Test, testGroup)
-import           Test.Framework.Providers.QuickCheck2      (testProperty)
-import           Test.QuickCheck
-
-prop_max_pm1Diff_is_1 :: Bool
-prop_max_pm1Diff_is_1 = pm1Diff (doubleToPM1 (-1)) (doubleToPM1 1) == 1
-
-prop_min_pm1Diff_is_0 :: Bool
-prop_min_pm1Diff_is_0
-  = pm1Diff (doubleToPM1 1) (doubleToPM1 1) == 0
-      && pm1Diff (doubleToPM1 (-1)) (doubleToPM1 (-1)) == 0
-
-prop_pm1Diff_in_range :: PM1Double -> PM1Double -> Property
-prop_pm1Diff_in_range x y = property $ deepseq (pm1Diff x y) True
-
-prop_pm1Diff_is_symmetric :: PM1Double -> PM1Double -> Property
-prop_pm1Diff_is_symmetric x y = property $ pm1Diff x y == pm1Diff y x
-
-prop_max_pm1VectorDiff_is_1 :: Int -> Property
-prop_max_pm1VectorDiff_is_1 n = n > 0 ==>
-  pm1VectorDiff ones minusOnes == 1
-  where ones = replicate n . doubleToPM1 $ 1
-        minusOnes = replicate n . doubleToPM1 $ -1
-
-prop_max_pm1VectorDiff_is_0 :: Int -> Property
-prop_max_pm1VectorDiff_is_0 n = property $ pm1VectorDiff ones ones == 0
-  where ones = replicate n . doubleToPM1 $ 1
-
-prop_pm1VectorDiff_in_range :: [PM1Double] -> [PM1Double] -> Property
-prop_pm1VectorDiff_in_range x y = property $ 0 <= diff && diff <= 1
-  where diff = pm1VectorDiff x y
-
-prop_pm1VectorDiff_is_symmetric :: [PM1Double] -> [PM1Double] -> Property
-prop_pm1VectorDiff_is_symmetric x y = property $
-  pm1VectorDiff x y == pm1VectorDiff y x
+import           ALife.Creatur.Gene.Numeric.UnitInterval (UIDouble)
+import           ALife.Creatur.Gene.Test                 (prop_diff_can_be_0,
+                                                          prop_diff_can_be_1,
+                                                          prop_diff_is_symmetric,
+                                                          prop_diploid_expressable,
+                                                          prop_diploid_identity,
+                                                          prop_diploid_readable,
+                                                          prop_genetic_round_trippable,
+                                                          prop_makeSimilar_works,
+                                                          prop_serialize_round_trippable,
+                                                          prop_show_read_round_trippable)
+import           Test.Framework                          (Test, testGroup)
+import           Test.Framework.Providers.QuickCheck2    (testProperty)
 
 test :: Test
 test = testGroup "ALife.Creatur.Gene.Numeric.PlusMinusOneQC"
   [
     testProperty "prop_serialize_round_trippable - PM1Double"
-      (prop_serialize_round_trippable :: PM1Double -> Property),
+      (prop_serialize_round_trippable :: PM1Double -> Bool),
+    testProperty "prop_show_read_round_trippable - PM1Double"
+      (prop_show_read_round_trippable (==) :: PM1Double -> Bool),
     testProperty "prop_genetic_round_trippable - PM1Double"
-      (prop_genetic_round_trippable (==) :: PM1Double -> Property),
+      (prop_genetic_round_trippable (==) :: PM1Double -> Bool),
     -- testProperty "prop_genetic_round_trippable2 - PM1Double"
     --   (prop_genetic_round_trippable2
     --    :: Int -> [Word8] -> PM1Double -> Property),
     testProperty "prop_diploid_identity - PM1Double"
-      (prop_diploid_identity (==) :: PM1Double -> Property),
-    testProperty "prop_show_read_round_trippable - PM1Double"
-      (prop_show_read_round_trippable (==) :: PM1Double -> Property),
+      (prop_diploid_identity (==) :: PM1Double -> Bool),
     testProperty "prop_diploid_expressable - PM1Double"
-      (prop_diploid_expressable :: PM1Double -> PM1Double -> Property),
+      (prop_diploid_expressable :: PM1Double -> PM1Double -> Bool),
     testProperty "prop_diploid_readable - PM1Double"
-      (prop_diploid_readable :: PM1Double -> PM1Double -> Property),
+      (prop_diploid_readable :: PM1Double -> PM1Double -> Bool),
 
     testProperty "prop_serialize_round_trippable - [PM1Double]"
-      (prop_serialize_round_trippable :: [PM1Double] -> Property),
+      (prop_serialize_round_trippable :: [PM1Double] -> Bool),
+    testProperty "prop_show_read_round_trippable - [PM1Double]"
+      (prop_show_read_round_trippable (==) :: [PM1Double] -> Bool),
     testProperty "prop_genetic_round_trippable - [PM1Double]"
-      (prop_genetic_round_trippable (==)
-       :: [PM1Double] -> Property),
+      (prop_genetic_round_trippable (==) :: [PM1Double] -> Bool),
     -- testProperty "prop_genetic_round_trippable2 - [PM1Double]"
     --   (prop_genetic_round_trippable2
     --    :: Int -> [Word8] -> [PM1Double] -> Property),
     testProperty "prop_diploid_identity - [PM1Double]"
-      (prop_diploid_identity (==) :: [PM1Double] -> Property),
-    testProperty "prop_show_read_round_trippable - [PM1Double]"
-      (prop_show_read_round_trippable (==) :: [PM1Double] -> Property),
+      (prop_diploid_identity (==) :: [PM1Double] -> Bool),
     testProperty "prop_diploid_expressable - [PM1Double]"
-      (prop_diploid_expressable :: [PM1Double] -> [PM1Double] -> Property),
+      (prop_diploid_expressable :: [PM1Double] -> [PM1Double] -> Bool),
     testProperty "prop_diploid_readable - [PM1Double]"
-      (prop_diploid_readable :: [PM1Double] -> [PM1Double] -> Property),
-
-    testProperty "prop_max_pm1Diff_is_1"
-      prop_max_pm1Diff_is_1,
-    testProperty "prop_min_pm1Diff_is_0"
-      prop_min_pm1Diff_is_0,
-    testProperty "prop_pm1Diff_in_range"
-      prop_pm1Diff_in_range,
-    testProperty "prop_pm1Diff_is_symmetric"
-      prop_pm1Diff_is_symmetric,
+      (prop_diploid_readable :: [PM1Double] -> [PM1Double] -> Bool),
+    testProperty "prop_diff_can_be_1"
+      (prop_diff_can_be_1 diff :: PM1Double -> Bool),
+    testProperty "prop_diff_can_be_0"
+      (prop_diff_can_be_0 diff :: PM1Double -> Bool),
+    testProperty "prop_diff_is_symmetric"
+      (prop_diff_is_symmetric diff :: PM1Double -> PM1Double -> Bool),
     testProperty "prop_makeSimilar_works - PM1Double"
-      (prop_makeSimilar_works pm1Diff adjustPM1Double),
-    testProperty "prop_max_pm1VectorDiff_is_1"
-      prop_max_pm1VectorDiff_is_1,
-    testProperty "prop_max_pm1VectorDiff_is_0"
-      prop_max_pm1VectorDiff_is_0,
-    testProperty "prop_pm1VectorDiff_in_range"
-      prop_pm1VectorDiff_in_range,
-    testProperty "prop_pm1VectorDiff_is_symmetric"
-      prop_pm1VectorDiff_is_symmetric,
-    testProperty "prop_makeSimilar_works - PM1 Vector"
-      (prop_makeSimilar_works pm1VectorDiff adjustPM1Vector)
+      (prop_makeSimilar_works diff makeSimilar
+        :: PM1Double -> UIDouble -> PM1Double -> Bool)
   ]

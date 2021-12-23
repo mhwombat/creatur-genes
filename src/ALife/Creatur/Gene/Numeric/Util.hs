@@ -32,12 +32,10 @@ module ALife.Creatur.Gene.Numeric.Util
     forceIntToWord16,
     word16ToInt,
     intersection,
-    unitVectors,
-    adjustNum
+    unitVectors
   ) where
 
-import           Data.Word
-    (Word16, Word64, Word8)
+import           Data.Word (Word16, Word64, Word8)
 
 -- | The range [0,1], endpoints included.
 unitInterval :: Num a => (a, a)
@@ -164,15 +162,3 @@ intersection (a, b) (c, d)
 unitVectors :: Num a => Int -> [[a]]
 unitVectors n = map f [0..n-1]
   where f k = replicate k 0 ++ 1 : replicate (n-k-1) 0
-
--- | Adjusts a number to make it more similar to the target.
-adjustNum :: (Num a, Ord a, Eq a) => a -> a -> a -> a
-adjustNum target r x
-  | r < 0     = error "Negative learning rate"
-  | r > 1     = error "Learning rate > 1"
-  | otherwise = adjustNum' r target x
-
--- Note that parameters are swapped
-adjustNum' :: Num a => a -> a -> a -> a
-adjustNum' r target x = x + r*(target - x)
-

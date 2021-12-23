@@ -6,5 +6,7 @@ in
     source-overrides = {
       creatur = ../creatur;
       gray-extended = ../gray-extended;
+      grid = ../grid;
+      som = ../som;
     };
   }

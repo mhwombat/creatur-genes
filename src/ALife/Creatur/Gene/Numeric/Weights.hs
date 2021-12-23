@@ -17,7 +17,6 @@ module ALife.Creatur.Gene.Numeric.Weights
     weightedSum,
     weightAt,
     toUIDoubles,
-    weightedUIVectorDiff,
     numWeights,
     sizedArbWeights
   ) where
