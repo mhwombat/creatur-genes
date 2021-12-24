@@ -44,8 +44,9 @@ import           Test.QuickCheck                   (Arbitrary)
 newtype UIDouble = UIDouble Double
   deriving (Eq, Ord, Generic)
   deriving anyclass (W8.Genetic)
-  deriving newtype (NFData, Serialize, Num)
-  deriving (Show, Read, Random, Arbitrary, Diploid)
+  deriving newtype (NFData, Serialize)
+  deriving (Show, Read, Random, Arbitrary, Diploid, Num,
+            Fractional, Floating, Real)
     via (UseNarrow UIDouble)
 
 instance Bounded UIDouble where
