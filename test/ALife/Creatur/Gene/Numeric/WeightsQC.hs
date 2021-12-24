@@ -39,7 +39,7 @@ prop_weighted_sum_in_range ws xs = seq (weightedSum ws xs) True
 
 prop_weights_are_normalised :: Weights -> Property
 prop_weights_are_normalised ws
-  = not (null xs) ==> sum xs <= 1 && N.within 10 1 (sum xs)
+  = not (null xs) ==> sum xs <= 1 && N.within 100 1 (sum xs)
   where xs = map wide $ toUIDoubles ws
 
 -- The express function in Diploid normalises the weights, so the identity may

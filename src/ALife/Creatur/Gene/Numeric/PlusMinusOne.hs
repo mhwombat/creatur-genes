@@ -24,12 +24,13 @@ module ALife.Creatur.Gene.Numeric.PlusMinusOne
     PM1Double,
     narrow,
     wide,
+    crop,
     diff,
     makeSimilar
   ) where
 
 import           ALife.Creatur.Gene.Numeric.Narrow       (BaseType, Narrow,
-                                                          UseNarrow (..),
+                                                          UseNarrow (..), crop,
                                                           narrow,
                                                           unsafeConstructor,
                                                           wide)

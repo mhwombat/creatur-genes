@@ -24,13 +24,15 @@ module ALife.Creatur.Gene.Numeric.UnitInterval
     UIDouble,
     narrow,
     wide,
+    crop,
     diff,
     makeSimilar
   ) where
 
 import           ALife.Creatur.Gene.Numeric.Narrow (BaseType, Narrow,
-                                                    UseNarrow (..), narrow,
-                                                    unsafeConstructor, wide)
+                                                    UseNarrow (..), crop,
+                                                    narrow, unsafeConstructor,
+                                                    wide)
 import qualified ALife.Creatur.Genetics.BRGCWord8  as W8
 import           ALife.Creatur.Genetics.Diploid    (Diploid)
 import           Control.DeepSeq                   (NFData)
