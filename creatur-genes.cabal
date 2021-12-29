@@ -39,6 +39,7 @@ library
     ALife.Creatur.Gene.Numeric.Weights
     ALife.Creatur.Gene.Numeric.WeightsInternal
     ALife.Creatur.Gene.Test
+    ALife.Creatur.Gene.AdjusterTest
 
   other-modules:   Paths_creatur_genes
   autogen-modules: Paths_creatur_genes
