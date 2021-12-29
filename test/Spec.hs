@@ -15,7 +15,6 @@ import           ALife.Creatur.Gene.Numeric.PlusMinusOneQC (test)
 import           ALife.Creatur.Gene.Numeric.UnitIntervalQC (test)
 import           ALife.Creatur.Gene.Numeric.UtilQC         (test)
 import           ALife.Creatur.Gene.Numeric.WeightsQC      (test)
-import           ALife.Creatur.Gene.TestQC                 (test)
 
 import           Test.Framework                            as TF (Test,
                                                                   defaultMain)
@@ -24,7 +23,6 @@ tests :: [TF.Test]
 tests =
   [
     -- In increasing order of complexity
-    ALife.Creatur.Gene.TestQC.test,
     ALife.Creatur.Gene.Numeric.UtilQC.test,
     ALife.Creatur.Gene.Numeric.UnitIntervalQC.test,
     ALife.Creatur.Gene.Numeric.NonNegativeQC.test,

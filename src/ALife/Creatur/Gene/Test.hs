@@ -17,7 +17,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 module ALife.Creatur.Gene.Test
   (
-    TestPattern(..),
     arb8BitDouble,
     arb8BitInt,
     prop_serialize_round_trippable,
@@ -31,30 +30,23 @@ module ALife.Creatur.Gene.Test
     prop_diff_can_be_0,
     prop_diff_can_be_1,
     prop_diff_is_symmetric,
-    randomTestPattern,
-    testPatternDiff,
-    makeTestPatternSimilar,
     divvy
   ) where
 
-import           ALife.Creatur.Gene.Numeric.UnitInterval (UIDouble, narrow,
-                                                          wide)
-import           ALife.Creatur.Gene.Numeric.Util         (forceToWord8,
-                                                          scaleFromWord8,
+import           ALife.Creatur.Gene.Numeric.UnitInterval (UIDouble, narrow)
+import           ALife.Creatur.Gene.Numeric.Util         (scaleFromWord8,
                                                           scaleWord8ToInt)
 import qualified ALife.Creatur.Genetics.BRGCWord8        as W8
 import           ALife.Creatur.Genetics.Diploid          (Diploid, express)
 import           ALife.Creatur.Util                      (fromEither)
 import           Control.DeepSeq                         (NFData, deepseq)
-import           Control.Monad.Random                    (Rand, RandomGen,
-                                                          getRandom)
 import           Control.Monad.State.Lazy                (runState)
-import qualified Data.Datamining.Pattern.Numeric         as N
 import           Data.Serialize                          (Serialize, decode,
                                                           encode)
 import           Data.Word                               (Word8)
-import           GHC.Generics                            (Generic)
-import           Test.QuickCheck
+import           Test.QuickCheck                         (Gen, Property,
+                                                          arbitrary, choose,
+                                                          vectorOf, (==>))
 
 -- | Returns a generator for 8-bit floating point values in the
 --   specified range.
@@ -137,37 +129,6 @@ prop_diff_can_be_1 diff dummy
 
 prop_diff_is_symmetric :: (a -> a -> UIDouble) -> a -> a -> Bool
 prop_diff_is_symmetric diff x y = diff x y == diff y x
-
--- | A simple pattern that is useful for testing.
-newtype TestPattern = TestPattern Word8
-  deriving (Show, Read, Eq, Generic, Serialize, W8.Genetic, Diploid,
-            NFData, Ord)
-
-instance Arbitrary TestPattern where
-  arbitrary = TestPattern <$> arbitrary
-
--- | Difference between two test patterns, expressed as a number
---   between 0 (identical) and 1 (maximally different).
-testPatternDiff :: TestPattern -> TestPattern -> UIDouble
-testPatternDiff (TestPattern x) (TestPattern y)
-  = narrow $ abs (fromIntegral x - fromIntegral y) / 255
-
--- | @'makeTestPatternSimilar' target r x@ adjusts @x@ to make it
---   similar to @target@.
---   The amount of adjustment is controlled by @r@, where 0 <= @r@ <= 1.
---   If @r@=0, the result will be identical to @x@.
---   If @r@=1, the result will be identical @target@.
-makeTestPatternSimilar
-  :: TestPattern -> UIDouble -> TestPattern -> TestPattern
-makeTestPatternSimilar (TestPattern target) r (TestPattern x)
-    = TestPattern (forceToWord8 x'')
-    where t' = fromIntegral target :: Double
-          x' = fromIntegral x :: Double
-          x'' = N.makeSimilar t' (wide r) x'
-
--- | Random pattern generator.
-randomTestPattern :: RandomGen r => Rand r TestPattern
-randomTestPattern = TestPattern <$> getRandom
 
 -- | @'divvy' n k@ uses size @n@ to generate a vector of @k@ integers,
 --   guaranteeing that the sum of the vector is less than @k@ or @n@,
