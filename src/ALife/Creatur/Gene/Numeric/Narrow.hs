@@ -30,10 +30,9 @@ module ALife.Creatur.Gene.Numeric.Narrow
     UseNarrow(..)
   ) where
 
-import           ALife.Creatur.Genetics.Diploid (Diploid, express)
-import           System.Random                  (Random, random, randomR)
-import           Test.QuickCheck                (Arbitrary, arbitrary, choose)
-import qualified Text.Read                      as TR
+import           System.Random   (Random, random, randomR)
+import           Test.QuickCheck (Arbitrary, arbitrary, choose)
+import qualified Text.Read       as TR
 
 -- | Values that are constrained to lie in an interval.
 class Narrow a where
@@ -95,11 +94,6 @@ instance (Narrow a, Ord a, Bounded a, Random (BaseType a))
   arbitrary = UN . narrow <$> choose (a, b)
     where a = wide (minBound :: a)
           b = wide (maxBound :: a)
-
-instance (Narrow a, Ord a, Bounded a, Num (BaseType a),
-          Fractional (BaseType a))
-  => Diploid (UseNarrow a) where
-  express x y = UN . narrow $ ((wide $ unpack x) + (wide $ unpack y))/2
 
 instance (Narrow a, Ord a, Bounded a, Num (BaseType a)) => Num (UseNarrow a) where
   x + y = UN . narrow $ (wide $ unpack x) + (wide $ unpack y)

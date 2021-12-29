@@ -47,9 +47,8 @@ import           Test.QuickCheck                         (Arbitrary)
 newtype PM1Double = PM1Double Double
   deriving (Eq, Ord, Generic)
   deriving anyclass (W8.Genetic)
-  deriving newtype (NFData, Serialize)
-  deriving (Show, Read, Random, Arbitrary, Diploid, Num,
-            Fractional, Floating, Real)
+  deriving newtype (NFData, Serialize, Diploid)
+  deriving (Show, Read, Random, Arbitrary, Num, Fractional, Floating, Real)
     via (UseNarrow PM1Double)
 
 instance Bounded PM1Double where
