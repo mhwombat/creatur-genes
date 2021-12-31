@@ -21,43 +21,56 @@
 
 module ALife.Creatur.Gene.Numeric.NonNegative
   (
-    NNDouble,
+    Double,
     narrow,
     wide,
     crop,
-    diff,
-    makeSimilar
+    doubleDiff,
+    makeDoubleSimilar
   ) where
+
+import           Prelude                                 hiding (Double)
+import qualified Prelude
 
 import           ALife.Creatur.Gene.Numeric.Narrow       (BaseType, Narrow,
                                                           UseNarrow (..), crop,
                                                           narrow,
                                                           unsafeConstructor,
                                                           wide)
-import           ALife.Creatur.Gene.Numeric.UnitInterval (diff, makeSimilar)
+import qualified ALife.Creatur.Gene.Numeric.UnitInterval as UI
 import qualified ALife.Creatur.Genetics.BRGCWord8        as W8
 import           ALife.Creatur.Genetics.Diploid          (Diploid)
 import           Control.DeepSeq                         (NFData)
-import qualified Data.Datamining.Pattern.Numeric         as N
+import           Data.Datamining.Pattern.Numeric         (boundedFractionalDiff,
+                                                          makeRealFracSimilar,
+                                                          maxDouble)
 import           Data.Serialize                          (Serialize)
 import           GHC.Generics                            (Generic)
 import           System.Random                           (Random)
 import           Test.QuickCheck                         (Arbitrary)
 
 -- | A non-negative number
-newtype NNDouble = NNDouble Double
+newtype Double = Double Prelude.Double
   deriving (Eq, Ord, Generic)
   deriving anyclass (W8.Genetic)
   deriving newtype (NFData, Serialize, Diploid)
   deriving (Show, Read, Random, Arbitrary, Num, Fractional, Floating, Real)
-    via (UseNarrow NNDouble)
+    via (UseNarrow Double)
 
-instance Bounded NNDouble where
-  minBound = NNDouble 0
-  maxBound = NNDouble (N.maxDouble / 2)
+instance Bounded Double where
+  minBound = Double 0
+  maxBound = Double (maxDouble / 2)
     -- division by two ensures that diploid expression stays in bounds
+    -- TODO: Instead, divide by two in the implementation of Diploid
+    -- for floating point types.
 
-instance Narrow NNDouble where
-  type BaseType NNDouble = Double
-  unsafeConstructor = NNDouble
-  wide (NNDouble x) = x
+instance Narrow Double where
+  type BaseType Double = Prelude.Double
+  unsafeConstructor = Double
+  wide (Double x) = x
+
+doubleDiff :: Double -> Double -> UI.Double
+doubleDiff = boundedFractionalDiff
+
+makeDoubleSimilar :: Double -> UI.Double -> Double -> Double
+makeDoubleSimilar = makeRealFracSimilar

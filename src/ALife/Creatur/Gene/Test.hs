@@ -26,27 +26,20 @@ module ALife.Creatur.Gene.Test
     prop_diploid_expressable,
     prop_diploid_readable,
     prop_show_read_round_trippable,
-    prop_makeSimilar_works,
-    prop_diff_can_be_0,
-    prop_diff_can_be_1,
-    prop_diff_is_symmetric,
     divvy
   ) where
 
-import           ALife.Creatur.Gene.Numeric.UnitInterval (UIDouble, narrow)
-import           ALife.Creatur.Gene.Numeric.Util         (scaleFromWord8,
-                                                          scaleWord8ToInt)
-import qualified ALife.Creatur.Genetics.BRGCWord8        as W8
-import           ALife.Creatur.Genetics.Diploid          (Diploid, express)
-import           ALife.Creatur.Util                      (fromEither)
-import           Control.DeepSeq                         (NFData, deepseq)
-import           Control.Monad.State.Lazy                (runState)
-import           Data.Serialize                          (Serialize, decode,
-                                                          encode)
-import           Data.Word                               (Word8)
-import           Test.QuickCheck                         (Gen, Property,
-                                                          arbitrary, choose,
-                                                          vectorOf, (==>))
+import           ALife.Creatur.Gene.Numeric.Util  (scaleFromWord8,
+                                                   scaleWord8ToInt)
+import qualified ALife.Creatur.Genetics.BRGCWord8 as W8
+import           ALife.Creatur.Genetics.Diploid   (Diploid, express)
+import           ALife.Creatur.Util               (fromEither)
+import           Control.DeepSeq                  (NFData, deepseq)
+import           Control.Monad.State.Lazy         (runState)
+import           Data.Serialize                   (Serialize, decode, encode)
+import           Data.Word                        (Word8)
+import           Test.QuickCheck                  (Gen, Property, arbitrary,
+                                                   choose, vectorOf, (==>))
 
 -- | Returns a generator for 8-bit floating point values in the
 --   specified range.
@@ -109,26 +102,6 @@ prop_diploid_readable a b = deepseq (c `asTypeOf` a) True
   where ga = W8.write a
         gb = W8.write b
         (Right c) = W8.runDiploidReader W8.getAndExpress (ga, gb)
-
--- | Verify that `makeSimilar a b` returns a value that is no further
---   away from `b` than `a` was.
-prop_makeSimilar_works
-  :: (a -> a -> UIDouble) -> (a -> UIDouble -> a -> a) -> a -> UIDouble
-    -> a -> Bool
-prop_makeSimilar_works diff makeSimilar x r y = diffAfter <= diffBefore
-  where diffBefore = diff x y
-        y' = makeSimilar x r y
-        diffAfter = diff x y'
-
-prop_diff_can_be_0 :: (a -> a -> UIDouble) -> a -> Bool
-prop_diff_can_be_0 diff x = diff x x == narrow 0
-
-prop_diff_can_be_1 :: Bounded a => (a -> a -> UIDouble) -> a -> Bool
-prop_diff_can_be_1 diff dummy
-  = diff (minBound `asTypeOf` dummy) (maxBound `asTypeOf` dummy) == narrow 1
-
-prop_diff_is_symmetric :: (a -> a -> UIDouble) -> a -> a -> Bool
-prop_diff_is_symmetric diff x y = diff x y == diff y x
 
 -- | @'divvy' n k@ uses size @n@ to generate a vector of @k@ integers,
 --   guaranteeing that the sum of the vector is less than @k@ or @n@,

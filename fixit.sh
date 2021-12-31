@@ -7,30 +7,13 @@ force=
 
 function modify () {
     sed '
-s/UnitInterval/ConstrainedDouble/g
-s/uiToDouble/toDouble/g
-s/doubletoUI/fromDouble/g
-s/forceDoubletoUI/force/g
-s/uiApply/apply/g
-s/adjustUIDouble/adjust/g
-s/uiDiff/diff/g
-s/uiVectorDiff/vectorDiff/g
-s/adjustUIVector/adjustVector/g
-s/adjustUIVectorPreserveLength/adjustVectorPreserveLength/g
-s/uiDoublesTo8BitHex/to8BitHexes/g
-s/uiDoubleTo8BitHex/to8BitHex/g
-s/PlusMinusOne/ConstrainedDouble/g
-s/pm1ToDouble/toDouble/g
-s/doubleToPM1/fromDouble/g
-s/forceDoubleToPM1/force/g
-s/pm1Apply/apply/g
-s/adjustPM1Double/adjust/g
-s/pm1Diff/diff/g
-s/pm1VectorDiff/vectorDiff/g
-s/adjustPM1Vector/adjustVector/g
-s/adjustPM1VectorPreserveLength/adjustVectorPreserveLength/g
-s/pm1DoublesTo8BitHex/to8BitHexes/g
-s/pm1DoubleTo8BitHex/to8BitHex/g
+s/UI.UIDouble/UI.Double/g
+s/UIDouble/UI.Double/g
+s/NN.NNDouble/NN.Double/g
+s/NNDouble/NN.Double/g
+s/PM1.PM1Double/PM1.Double/g
+s/PM1Double/PM1.Double/g
+s/toUI.Doubles/toUIDoubles/g
 '
 }
 

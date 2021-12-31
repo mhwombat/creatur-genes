@@ -21,41 +21,52 @@
 
 module ALife.Creatur.Gene.Numeric.PlusMinusOne
   (
-    PM1Double,
+    Double,
     narrow,
     wide,
     crop,
-    diff,
-    makeSimilar
+    doubleDiff,
+    makeDoubleSimilar
   ) where
+
+import           Prelude                                 hiding (Double)
+import qualified Prelude
 
 import           ALife.Creatur.Gene.Numeric.Narrow       (BaseType, Narrow,
                                                           UseNarrow (..), crop,
                                                           narrow,
                                                           unsafeConstructor,
                                                           wide)
-import           ALife.Creatur.Gene.Numeric.UnitInterval (diff, makeSimilar)
+import qualified ALife.Creatur.Gene.Numeric.UnitInterval as UI
 import qualified ALife.Creatur.Genetics.BRGCWord8        as W8
 import           ALife.Creatur.Genetics.Diploid          (Diploid)
 import           Control.DeepSeq                         (NFData)
+import           Data.Datamining.Pattern.Numeric         (boundedFractionalDiff,
+                                                          makeRealFracSimilar)
 import           Data.Serialize                          (Serialize)
 import           GHC.Generics                            (Generic)
 import           System.Random                           (Random)
 import           Test.QuickCheck                         (Arbitrary)
 
 -- | A number on the interval -1 to 1, inclusive.
-newtype PM1Double = PM1Double Double
+newtype Double = Double Prelude.Double
   deriving (Eq, Ord, Generic)
   deriving anyclass (W8.Genetic)
   deriving newtype (NFData, Serialize, Diploid)
   deriving (Show, Read, Random, Arbitrary, Num, Fractional, Floating, Real)
-    via (UseNarrow PM1Double)
+    via (UseNarrow Double)
 
-instance Bounded PM1Double where
-  minBound = PM1Double (-1)
-  maxBound = PM1Double 1
+instance Bounded Double where
+  minBound = Double (-1)
+  maxBound = Double 1
 
-instance Narrow PM1Double where
-  type BaseType PM1Double = Double
-  unsafeConstructor = PM1Double
-  wide (PM1Double x) = x
+instance Narrow Double where
+  type BaseType Double = Prelude.Double
+  unsafeConstructor = Double
+  wide (Double x) = x
+
+doubleDiff :: Double -> Double -> UI.Double
+doubleDiff = boundedFractionalDiff
+
+makeDoubleSimilar :: Double -> UI.Double -> Double -> Double
+makeDoubleSimilar = makeRealFracSimilar

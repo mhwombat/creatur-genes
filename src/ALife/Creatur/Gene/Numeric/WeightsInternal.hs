@@ -17,8 +17,7 @@
 {-# LANGUAGE TypeFamilies   #-}
 module ALife.Creatur.Gene.Numeric.WeightsInternal where
 
-import           ALife.Creatur.Gene.Numeric.UnitInterval (UIDouble, narrow,
-                                                          wide)
+import qualified ALife.Creatur.Gene.Numeric.UnitInterval as UI
 import           ALife.Creatur.Genetics.BRGCWord8        (Genetic, get)
 import           ALife.Creatur.Genetics.Diploid          (Diploid, express)
 import           Control.DeepSeq                         (NFData)
@@ -29,7 +28,7 @@ import           Test.QuickCheck                         (Arbitrary, Gen,
                                                           vectorOf)
 
 -- | A sequence of weights for calculating weighted sums.
-newtype Weights = Weights [UIDouble]
+newtype Weights = Weights [UI.Double]
   deriving (Eq, Show, Read, Generic, Ord, Serialize, NFData)
   -- NOTE: Regarding Diploid instance, sum of weights will never be >1,
   -- because "express" chooses the smaller value.
@@ -44,7 +43,7 @@ instance Diploid Weights where
 
 -- | Constructs a sequence of weights based on the input vector, but
 --   normalised so that the sum of the weights is 1.
-makeWeights :: [UIDouble] -> Weights
+makeWeights :: [UI.Double] -> Weights
 makeWeights [] = Weights []
 makeWeights ws = Weights . normalise $ ws
 
@@ -53,13 +52,13 @@ numWeights :: Weights -> Int
 numWeights (Weights xs) = length xs
 
 -- | Calculates the weighted sum of a sequence of values.
-weightedSum :: Weights -> [UIDouble] -> UIDouble
-weightedSum ws xs = narrow . sum $ zipWith (*) ws' xs'
-  where ws' = map wide $ toUIDoubles ws
-        xs' = map wide xs
+weightedSum :: Weights -> [UI.Double] -> UI.Double
+weightedSum ws xs = UI.narrow . sum $ zipWith (*) ws' xs'
+  where ws' = map UI.wide $ toUIDoubles ws
+        xs' = map UI.wide xs
 
 -- | Extract the weights from a @Weights@ object.
-toUIDoubles :: Weights -> [UIDouble]
+toUIDoubles :: Weights -> [UI.Double]
 toUIDoubles (Weights xs) = xs
 
 -- randomWeights :: RandomGen g => Int -> Rand g Weights
@@ -79,30 +78,30 @@ toUIDoubles (Weights xs) = xs
 --   or zero if there is no weight at that index.
 -- Weights are short lists, so the call to length isn't too
 -- inefficient.
-weightAt :: Weights -> Int -> UIDouble
+weightAt :: Weights -> Int -> UI.Double
 weightAt w n = if length ws > n
                then ws !! n
-               else narrow 0
+               else UI.narrow 0
   where ws = toUIDoubles w
 
 -- | Internal method
-normalise :: [UIDouble] -> [UIDouble]
+normalise :: [UI.Double] -> [UI.Double]
 normalise ws
-  | k == 0     = replicate n (narrow (1 / fromIntegral n))
+  | k == 0     = replicate n (UI.narrow (1 / fromIntegral n))
   | otherwise = tweak $ map scale ws
-  where k = sum . map wide $ ws
+  where k = sum . map UI.wide $ ws
         n = length ws
-        scale w = narrow $ wide w / k
+        scale w = UI.narrow $ UI.wide w / k
 
 -- | Internal method
-tweak :: [UIDouble] -> [UIDouble]
+tweak :: [UI.Double] -> [UI.Double]
 tweak (x:xs)
-  | excess > 0 && x' > excess = narrow (x' - excess) : xs
-  | excess > 0               = narrow 0 : tweak xs
+  | excess > 0 && x' > excess = UI.narrow (x' - excess) : xs
+  | excess > 0               = UI.narrow 0 : tweak xs
   | otherwise                = x : xs
   where excess = max 0 $ s - 1
-        x' = wide x
-        s = sum . map wide $ (x:xs)
+        x' = UI.wide x
+        s = sum . map UI.wide $ (x:xs)
 tweak [] = error "tweak should not have been called"
 
 -- | Generator for weights.

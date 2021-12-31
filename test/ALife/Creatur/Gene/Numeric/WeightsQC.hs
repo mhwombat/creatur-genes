@@ -17,7 +17,7 @@ module ALife.Creatur.Gene.Numeric.WeightsQC
     sizedArbWeights
   ) where
 
-import           ALife.Creatur.Gene.Numeric.UnitInterval    (UIDouble, wide)
+import qualified ALife.Creatur.Gene.Numeric.UnitInterval    as UI
 import           ALife.Creatur.Gene.Numeric.UnitIntervalQC  ()
 import           ALife.Creatur.Gene.Numeric.WeightsInternal
 import           ALife.Creatur.Gene.Test
@@ -29,25 +29,25 @@ import           Test.QuickCheck
 prop_sum_of_weights_is_1 :: Weights -> Property
 prop_sum_of_weights_is_1 w
   = not (null ws) ==> sum ws <= 1 && (sum ws - 1) < 1e-10
-  where ws = map wide $ toUIDoubles w
+  where ws = map UI.wide $ toUIDoubles w
 
 prop_weights_are_positive :: Weights -> Bool
-prop_weights_are_positive w = (all ((>= 0) . wide) . toUIDoubles) w
+prop_weights_are_positive w = (all ((>= 0) . UI.wide) . toUIDoubles) w
 
-prop_weighted_sum_in_range :: Weights -> [UIDouble] -> Bool
+prop_weighted_sum_in_range :: Weights -> [UI.Double] -> Bool
 prop_weighted_sum_in_range ws xs = seq (weightedSum ws xs) True
 
 prop_weights_are_normalised :: Weights -> Property
 prop_weights_are_normalised ws
   = not (null xs) ==> sum xs <= 1 && N.within 100 1 (sum xs)
-  where xs = map wide $ toUIDoubles ws
+  where xs = map UI.wide $ toUIDoubles ws
 
 -- The express function in Diploid normalises the weights, so the identity may
 -- not hold exactly.
 equiv :: Weights -> Weights -> Bool
 equiv (Weights xs) (Weights ys)
   = length xs == length ys
-      && and (zipWith (N.within 100000) (map wide xs) (map wide ys))
+      && and (zipWith (N.within 100000) (map UI.wide xs) (map UI.wide ys))
 
 test :: Test
 test = testGroup "ALife.Creatur.Gene.Numeric.WeightsQC"

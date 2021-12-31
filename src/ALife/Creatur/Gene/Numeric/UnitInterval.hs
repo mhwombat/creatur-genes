@@ -21,13 +21,16 @@
 
 module ALife.Creatur.Gene.Numeric.UnitInterval
   (
-    UIDouble,
+    Double,
     narrow,
     wide,
     crop,
-    diff,
-    makeSimilar
+    doubleDiff,
+    makeDoubleSimilar
   ) where
+
+import           Prelude                           hiding (Double)
+import qualified Prelude
 
 import           ALife.Creatur.Gene.Numeric.Narrow (BaseType, Narrow,
                                                     UseNarrow (..), crop,
@@ -36,40 +39,32 @@ import           ALife.Creatur.Gene.Numeric.Narrow (BaseType, Narrow,
 import qualified ALife.Creatur.Genetics.BRGCWord8  as W8
 import           ALife.Creatur.Genetics.Diploid    (Diploid)
 import           Control.DeepSeq                   (NFData)
-import qualified Data.Datamining.Pattern.Numeric   as N
+import           Data.Datamining.Pattern.Numeric   (boundedFractionalDiff,
+                                                    makeRealFracSimilar)
 import           Data.Serialize                    (Serialize)
 import           GHC.Generics                      (Generic)
 import           System.Random                     (Random)
 import           Test.QuickCheck                   (Arbitrary)
 
 -- | A number on the unit interval
-newtype UIDouble = UIDouble Double
+newtype Double = Double Prelude.Double
   deriving (Eq, Ord, Generic)
   deriving anyclass (W8.Genetic)
   deriving newtype (NFData, Serialize, Diploid)
   deriving (Show, Read, Random, Arbitrary, Num, Fractional, Floating, Real)
-    via (UseNarrow UIDouble)
+    via (UseNarrow Double)
 
-instance Bounded UIDouble where
-  minBound = UIDouble 0
-  maxBound = UIDouble 1
+instance Bounded Double where
+  minBound = Double 0
+  maxBound = Double 1
 
-instance Narrow UIDouble where
-  type BaseType UIDouble = Double
-  unsafeConstructor = UIDouble
-  wide (UIDouble x) = x
+instance Narrow Double where
+  type BaseType Double = Prelude.Double
+  unsafeConstructor = Double
+  wide (Double x) = x
 
--- | Internal method.
-typeWidth :: (Narrow a, Bounded a, BaseType a ~ Double) => a -> Double
-typeWidth x = wide (maxBound `asTypeOf` x) - wide (minBound `asTypeOf` x)
+doubleDiff :: Double -> Double -> Double
+doubleDiff = boundedFractionalDiff
 
-diff :: (Narrow a, Bounded a, BaseType a ~ Double) => a -> a -> UIDouble
-diff x y = narrow (difference / scale) :: UIDouble
-  where difference = abs $ (wide x) - (wide y) :: Double
-        scale = typeWidth x
-
--- | Convenience wrapper for makeSimilar on narrow types.
-makeSimilar
-  :: (Narrow a, Bounded a, Ord a, BaseType a ~ Double)
-  => a -> UIDouble -> a -> a
-makeSimilar x r y = narrow $ N.makeSimilar (wide x) (wide r) (wide y)
+makeDoubleSimilar :: Double -> Double -> Double -> Double
+makeDoubleSimilar = makeRealFracSimilar
