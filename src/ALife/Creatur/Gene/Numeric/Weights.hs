@@ -16,9 +16,8 @@ module ALife.Creatur.Gene.Numeric.Weights
     makeWeights,
     weightedSum,
     weightAt,
-    toUIDoubles,
-    numWeights,
-    sizedArbWeights
+    extractWeights,
+    numWeights
   ) where
 
 import           ALife.Creatur.Gene.Numeric.WeightsInternal

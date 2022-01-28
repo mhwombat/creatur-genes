@@ -1,6 +1,6 @@
 cabal-version:      2.4
 name:               creatur-genes
-version:            1.0.2
+version:            1.1.0
 synopsis:           Genes and genetic utilities for use with creatur.
 description:
   Please see the README on GitHub at <https://github.com/mhwombat/creatur-genes#readme>
@@ -70,6 +70,7 @@ test-suite creatur-genes-test
   build-depends:
     , creatur-genes
     , numeric-tools
+    , quickcheck-with-counterexamples >= 1.2 && < 1.3
     , som
     , test-framework
     , test-framework-quickcheck2
