@@ -1,5 +1,7 @@
 # Changelog for creatur-numeric-genes
 
+1.1.1 Reformatted source code.
+
 1.1.0 Weights are now parameterised.
 
 1.0.2 Added Narrow and NonNegative modules.

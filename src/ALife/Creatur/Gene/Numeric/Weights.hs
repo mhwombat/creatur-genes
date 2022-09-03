@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- |
 -- Module      :  ALife.Creatur.Gene.Numeric.Weights
--- Copyright   :  (c) 2015-2021 Amy de Buitléir
+-- Copyright   :  (c) 2015-2022 Amy de Buitléir
 -- License     :  BSD-style
 -- Maintainer  :  amy@nualeargais.ie
 -- Stability   :  experimental
